@@ -31,51 +31,51 @@ LETTERS[A-Za-z]
 %}
 
 
-[Pp][Rr][Oo][Gg][Rr][Aa][Mm]	return parser::make_PROGRAM(ctx->curline);
+(?i:"program")	return parser::make_PROGRAM(ctx->curline);
 
-[Bb][Ee][Gg][Ii][Nn]	return parser::make_BEGIN(ctx->curline);
+(?i:"begin")	return parser::make_BEGIN(ctx->curline);
 
-[Ee][Nn][Dd]	return parser::make_END(ctx->curline);
+(?i:"end")	return parser::make_END(ctx->curline);
 
-[Pp][Rr][Oo][Cc][Ee][Dd][Uu][Rr][Ee]	return parser::make_PROCEDURE(ctx->curline);
+(?i:"procedure")	return parser::make_PROCEDURE(ctx->curline);
 
-[Ff][Uu][Nn][Cc][Tt][Ii][Oo][Nn]	return parser::make_FUNCTION(ctx->curline);
+(?i:"function")	return parser::make_FUNCTION(ctx->curline);
 
-[Gg][Oo][Tt][Oo]	return parser::make_GOTO(ctx->curline);
+(?i:"goto")	return parser::make_GOTO(ctx->curline);
 
-[Ii][Ff]		return parser::make_IF(ctx->curline);
+(?i:"if")	return parser::make_IF(ctx->curline);
 
-[Tt][Hh][Ee][Nn]	return parser::make_THEN(ctx->curline);
+(?i:"then")	return parser::make_THEN(ctx->curline);
 
-[Ee][Ll][Ss][Ee]	return parser::make_ELSE(ctx->curline);
+(?i:"else")	return parser::make_ELSE(ctx->curline);
 
-[Oo][Rr]		return parser::make_OR(ctx->curline);
+(?i:"or")	return parser::make_OR(ctx->curline);
 
-[Nn][Oo][Tt]	return parser::make_NOT(ctx->curline);
+(?i:"not")	return parser::make_NOT(ctx->curline);
 
-[Ff][Oo][Rr]	return parser::make_FOR(ctx->curline);
+(?i:"for")	return parser::make_FOR(ctx->curline);
 
-[Ww][Hh][Ii][Ll][Ee]	return parser::make_WHILE(ctx->curline);
+(?i:"while")	return parser::make_WHILE(ctx->curline);
 
-[Dd][Oo]	return parser::make_DO(ctx->curline);
+(?i:"do")	return parser::make_DO(ctx->curline);
 
-[Rr][Ee][Pp][Ee][Aa][Tt]	return parser::make_REPEAT(ctx->curline);
+(?i:"repeat")	return parser::make_REPEAT(ctx->curline);
 
-[Uu][Nn][Tt][Ii][Ll]	return parser::make_UNTIL(ctx->curline);
+(?i:"until")	return parser::make_UNTIL(ctx->curline);
 
-[Rr][Ee][Cc][Oo][Rr][Dd]	return parser::make_RECORD(ctx->curline);
+(?i:"record")	return parser::make_RECORD(ctx->curline);
 
-[Ll][Aa][Bb][Ee][Ll]	return parser::make_LABEL(ctx->curline);
+(?i:"label")	return parser::make_LABEL(ctx->curline);
 
-[Vv][Aa][Rr]	return parser::make_VAR(ctx->curline);
+(?i:"var")	return parser::make_VAR(ctx->curline);
 
-[Tt][Yy][Pp][Ee]	return parser::make_TYPE(ctx->curline);
+(?i:"type")	return parser::make_TYPE(ctx->curline);
 
-[Cc][Oo][Nn][Ss][Tt]	return parser::make_CONST(ctx->curline);
+(?i:"const")	return parser::make_CONST(ctx->curline);
 
-[Aa][Rr][Rr][Aa][Yy]	return parser::make_ARRAY(ctx->curline);
+(?i:"array")	return parser::make_ARRAY(ctx->curline);
 
-[Oo][Ff]		return parser::make_OF(ctx->curline);
+(?i:"of")	return parser::make_OF(ctx->curline);
 
 \,			return parser::make_COMMA(ctx->curline);
 
@@ -117,15 +117,15 @@ LETTERS[A-Za-z]
 
 \/			return parser::make_OPER_MUL(mlc::DUTOKGE_OPER_MUL::DUTOKGE_SOLIDUS, ctx->curline);
 
-[Dd][Ii][Vv]	return parser::make_OPER_MUL(mlc::DUTOKGE_OPER_MUL::DUTOKGE_DIV, ctx->curline);
+(?i:"div")	return parser::make_OPER_MUL(mlc::DUTOKGE_OPER_MUL::DUTOKGE_DIV, ctx->curline);
 
-[Mm][Oo][Dd]	return parser::make_OPER_MUL(mlc::DUTOKGE_OPER_MUL::DUTOKGE_MOD, ctx->curline);
+(?i:"mod")	return parser::make_OPER_MUL(mlc::DUTOKGE_OPER_MUL::DUTOKGE_MOD, ctx->curline);
 
-[Aa][Nn][Dd]	return parser::make_OPER_MUL(mlc::DUTOKGE_OPER_MUL::DUTOKGE_AND, ctx->curline);
+(?i:"and")	return parser::make_OPER_MUL(mlc::DUTOKGE_OPER_MUL::DUTOKGE_AND, ctx->curline);
 
-[Tt][Oo]		return parser::make_FOR_DIRECTION(mlc::DUTOKGE_FOR_DIRECTION::DUTOKGE_TO, ctx->curline);
+(?i:"to")	return parser::make_FOR_DIRECTION(mlc::DUTOKGE_FOR_DIRECTION::DUTOKGE_TO, ctx->curline);
 
-[Dd][Oo][Ww][nN][tT][oO]	return parser::make_FOR_DIRECTION(mlc::DUTOKGE_FOR_DIRECTION::DUTOKGE_DOWNTO, ctx->curline);
+(?i:"downto")	return parser::make_FOR_DIRECTION(mlc::DUTOKGE_FOR_DIRECTION::DUTOKGE_DOWNTO, ctx->curline);
 
 {DIGIT}+\.{DIGIT}+({EXPONENT})?	return parser::make_REAL(mlc::ls_real_index(), ctx->curline);
 
