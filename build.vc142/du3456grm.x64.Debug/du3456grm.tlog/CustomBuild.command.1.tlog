@@ -1,0 +1,4 @@
+^D:\DOCUMENTS\SCHOOL\COMPILERS\MLASKAL\PRIVATE-SRC\DU3456G.Y
+bison --report=all -d -o du3456g.cpp "D:\Documents\School\Compilers\mlaskal\private-src\du3456g.y"
+^D:\DOCUMENTS\SCHOOL\COMPILERS\MLASKAL\PRIVATE-SRC\DU3456L.LEX
+flex -Cf -b -p -p -odu3456l.cpp "D:\Documents\School\Compilers\mlaskal\private-src\du3456l.lex"
