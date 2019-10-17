@@ -20,6 +20,7 @@
 %option never-interactive
 
 WHITESPACE[ \r\t\f]
+DIGIT[0-9]
 
 %%
 
@@ -27,7 +28,7 @@ WHITESPACE[ \r\t\f]
 	typedef yy::mlaskal_parser parser;
 %}
 
-[0-9]+		{
+{DIGIT}+		{
 			    return parser::make_UINT(mlc::ls_int_index(), ctx->curline);
 			}
 			

@@ -825,11 +825,11 @@ YY_DECL
 		}
 
 	{
-#line 24 "D:\\Documents\\School\\Compilers\\mlaskal\\private-src\\du12l.lex"
+#line 25 "D:\\Documents\\School\\Compilers\\mlaskal\\private-src\\du12l.lex"
 
 
 
-#line 28 "D:\\Documents\\School\\Compilers\\mlaskal\\private-src\\du12l.lex"
+#line 29 "D:\\Documents\\School\\Compilers\\mlaskal\\private-src\\du12l.lex"
 	typedef yy::mlaskal_parser parser;
 
 
@@ -865,28 +865,28 @@ do_action:	/* This label is used only to access EOF actions. */
 	{ /* beginning of action switch */
 case 1:
 YY_RULE_SETUP
-#line 31 "D:\\Documents\\School\\Compilers\\mlaskal\\private-src\\du12l.lex"
+#line 32 "D:\\Documents\\School\\Compilers\\mlaskal\\private-src\\du12l.lex"
 {
 			    return parser::make_UINT(mlc::ls_int_index(), ctx->curline);
 			}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 35 "D:\\Documents\\School\\Compilers\\mlaskal\\private-src\\du12l.lex"
+#line 36 "D:\\Documents\\School\\Compilers\\mlaskal\\private-src\\du12l.lex"
 /* go out with whitespaces */
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 37 "D:\\Documents\\School\\Compilers\\mlaskal\\private-src\\du12l.lex"
+#line 38 "D:\\Documents\\School\\Compilers\\mlaskal\\private-src\\du12l.lex"
 message(mlc::DUERR_UNKCHAR, ctx->curline, *yytext, *yytext);
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 39 "D:\\Documents\\School\\Compilers\\mlaskal\\private-src\\du12l.lex"
+#line 40 "D:\\Documents\\School\\Compilers\\mlaskal\\private-src\\du12l.lex"
 return parser::make_EOF(ctx->curline);
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 41 "D:\\Documents\\School\\Compilers\\mlaskal\\private-src\\du12l.lex"
+#line 42 "D:\\Documents\\School\\Compilers\\mlaskal\\private-src\\du12l.lex"
 ECHO;
 	YY_BREAK
 #line 892 "du12l.cpp"
@@ -2039,7 +2039,7 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 41 "D:\\Documents\\School\\Compilers\\mlaskal\\private-src\\du12l.lex"
+#line 42 "D:\\Documents\\School\\Compilers\\mlaskal\\private-src\\du12l.lex"
 
 
 namespace mlc {
