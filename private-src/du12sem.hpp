@@ -17,9 +17,17 @@
 #include "dutables.hpp"
 #include "abstract_instr.hpp"
 #include "gen_ainstr.hpp"
+#include<tuple>
+#include<cmath>
+#include<cstdlib>
+
+using namespace std;
 
 namespace mlc {
 
+	tuple<int, bool> parse_int(char* rawInput);
+	
+	tuple<float, bool> parse_real(char* rawInput);
 
 }
 

@@ -13,6 +13,10 @@
 	// allow access to context 
 	// CHANGE THIS LINE TO #include "du3456g.hpp" WHEN THIS FILE IS COPIED TO du3456l.lex
 	#include "dummyg.hpp"
+	#include "du12sem.hpp"
+	#include<tuple>
+	#include<cstdlib>
+	#include<cmath>
 %}
 
 /* DO NOT TOUCH THIS OPTIONS! */
@@ -33,8 +37,8 @@ IDENTIFIER({LETTERS}({DIGIT}|{LETTERS})*)
 
 %{
 	typedef yy::mlaskal_parser parser;
+	std::string output;
 	int comment_depth = 0;
-	std::string match_val;
 %}
 
 \n				ctx->curline++;
@@ -43,27 +47,27 @@ IDENTIFIER({LETTERS}({DIGIT}|{LETTERS})*)
 
 \'			BEGIN(STRING);
 
-<STRING>[^\'\n]+	match_val.append(_strdup(yytext));
+<STRING>[^\'\n]+	output.append(_strdup(yytext));
 
-<STRING>\'\' match_val.append("'");
+<STRING>\'\' output.append("'");
 
 <STRING>\'	{
-	auto idx = ctx->tab->ls_str().add(match_val.c_str());
-	BEGIN(0);
+	auto idx = ctx->tab->ls_str().add(output.c_str());
+	BEGIN(INITIAL);
 	return parser::make_STRING(idx, ctx->curline);
 	}
 
 <STRING><<EOF>>	{
 	message(mlc::DUERR_EOFINSTRCHR, ctx->curline);
-	auto idx = ctx->tab->ls_str().add(match_val.c_str());
-	BEGIN(0);
+	auto idx = ctx->tab->ls_str().add(output.c_str());
+	BEGIN(INITIAL);
 	return parser::make_STRING(idx, ctx->curline);
 }
 
 <STRING>\n	{
 	message(mlc::DUERR_EOLINSTRCHR, ctx->curline);
-	auto idx = ctx->tab->ls_str().add(match_val.c_str());
-	BEGIN(0);
+	auto idx = ctx->tab->ls_str().add(output.c_str());
+	BEGIN(INITIAL);
 	return parser::make_STRING(idx, ctx->curline++);
 }
 
@@ -79,13 +83,14 @@ IDENTIFIER({LETTERS}({DIGIT}|{LETTERS})*)
 <COMMENT>\{		comment_depth++;
 
 <COMMENT>\}		{
-	if(--comment_depth == 0)
-		BEGIN(0);
+	comment_depth--;
+	if(comment_depth == 0)
+		BEGIN(INITIAL);
 }
 
 <COMMENT><<EOF>>	{
 	message(mlc::DUERR_EOFINCMT, ctx->curline);
-	BEGIN(0);
+	BEGIN(INITIAL);
 }
 
 (?i:"program")	return parser::make_PROGRAM(ctx->curline);
@@ -184,16 +189,68 @@ IDENTIFIER({LETTERS}({DIGIT}|{LETTERS})*)
 
 (?i:"downto")	return parser::make_FOR_DIRECTION(mlc::DUTOKGE_FOR_DIRECTION::DUTOKGE_DOWNTO, ctx->curline);
 
-{REAL}	return parser::make_REAL(mlc::ls_real_index(), ctx->curline);
-			
-{INT}		return parser::make_UINT(mlc::ls_int_index(), ctx->curline);
+{REAL}{IDENTIFIER}	{
+	message(mlc::DUERR_BADREAL, ctx->curline, yytext);
+	auto result = mlc::parse_real(yytext);
+	auto value = get<0>(result);
+	auto error = get<1>(result);
+	if(error)
+	{
+		char *end;
+		(void)strtof(yytext, &end);
+		message(mlc::DUERR_REALOUTRANGE, ctx->curline, std::string(yytext, (int)(end - yytext)));
+	}
+	auto idx = ctx->tab->ls_real().add(value);
+	return parser::make_REAL(idx, ctx->curline);
+}
+
+{REAL}	{
+	auto result = mlc::parse_real(yytext);
+	auto value = get<0>(result);
+	auto error = get<1>(result);
+	if(error)
+	{
+		message(mlc::DUERR_REALOUTRANGE, ctx->curline, yytext);
+	}
+	auto idx = ctx->tab->ls_real().add(value);
+	return parser::make_REAL(idx, ctx->curline);
+}
+
+{INT}{IDENTIFIER} {
+	message(mlc::DUERR_BADINT, ctx->curline, yytext);
+	auto result = mlc::parse_int(yytext);
+	auto value = get<0>(result);
+	auto error = get<1>(result);
+	if(error)
+	{
+		char *end;
+		(void)strtof(yytext, &end);
+		message(mlc::DUERR_INTOUTRANGE, ctx->curline, std::string(yytext, (int)(end - yytext)));
+	}
+	auto idx = ctx->tab->ls_int().add((int)value);
+	return parser::make_UINT(idx, ctx->curline);
+}
+
+{INT}		{
+	auto result = mlc::parse_int(yytext);
+	auto value = get<0>(result);
+	auto error = get<1>(result);
+	if(error)
+	{
+		message(mlc::DUERR_INTOUTRANGE, ctx->curline, yytext);
+	}
+	auto idx = ctx->tab->ls_int().add((int)value);
+	return parser::make_UINT(idx, ctx->curline);
+}
+
+
 
 {IDENTIFIER}	{
 	char *input = _strdup(yytext);
-	char *tmp = input;
-	while(*tmp){
-		*tmp = toupper((unsigned char) *tmp);
-		tmp++;
+	char *c = input;
+	while(*c){
+		*c = toupper((unsigned char) *c);
+		c++;
 	}
 	auto idx = ctx->tab->ls_id().add(input);
 	return parser::make_IDENTIFIER(idx, ctx->curline);
