@@ -19,17 +19,74 @@
 %option noyywrap nounput batch noinput stack reentrant
 %option never-interactive
 
-WHITESPACE[ \r\t\f\n]
+WHITESPACE[ \r\t\f]
 DIGIT[0-9]
-EXPONENT(E|e)(\+|\-)?{DIGIT}+
+INT({DIGIT}+)
+EXPONENT((E|e)(\+|\-)?{INT})
+REAL({INT}\.{INT}({EXPONENT})?|{INT}{EXPONENT})
 LETTERS[A-Za-z]
+IDENTIFIER({LETTERS}({DIGIT}|{LETTERS})*)
 
+%x STRING
+%x COMMENT
 %%
 
 %{
 	typedef yy::mlaskal_parser parser;
+	int comment_depth = 0;
+	std::string match_val;
 %}
 
+\n				ctx->curline++;
+
+<COMMENT>\n		ctx->curline++;
+
+\'			BEGIN(STRING);
+
+<STRING>[^\'\n]+	match_val.append(_strdup(yytext));
+
+<STRING>\'\' match_val.append("'");
+
+<STRING>\'	{
+	auto idx = ctx->tab->ls_str().add(match_val.c_str());
+	BEGIN(0);
+	return parser::make_STRING(idx, ctx->curline);
+	}
+
+<STRING><<EOF>>	{
+	message(mlc::DUERR_EOFINSTRCHR, ctx->curline);
+	auto idx = ctx->tab->ls_str().add(match_val.c_str());
+	BEGIN(0);
+	return parser::make_STRING(idx, ctx->curline);
+}
+
+<STRING>\n	{
+	message(mlc::DUERR_EOLINSTRCHR, ctx->curline);
+	auto idx = ctx->tab->ls_str().add(match_val.c_str());
+	BEGIN(0);
+	return parser::make_STRING(idx, ctx->curline++);
+}
+
+\{	{
+	comment_depth = 1;
+	BEGIN(COMMENT);
+}
+
+\}	message(mlc::DUERR_UNEXPENDCMT, ctx->curline);
+
+<COMMENT>[^\}\{\n]+
+
+<COMMENT>\{		comment_depth++;
+
+<COMMENT>\}		{
+	if(--comment_depth == 0)
+		BEGIN(0);
+}
+
+<COMMENT><<EOF>>	{
+	message(mlc::DUERR_EOFINCMT, ctx->curline);
+	BEGIN(0);
+}
 
 (?i:"program")	return parser::make_PROGRAM(ctx->curline);
 
@@ -127,13 +184,20 @@ LETTERS[A-Za-z]
 
 (?i:"downto")	return parser::make_FOR_DIRECTION(mlc::DUTOKGE_FOR_DIRECTION::DUTOKGE_DOWNTO, ctx->curline);
 
-{DIGIT}+\.{DIGIT}+({EXPONENT})?	return parser::make_REAL(mlc::ls_real_index(), ctx->curline);
-
-{DIGIT}+{EXPONENT}			return parser::make_REAL(mlc::ls_real_index(), ctx->curline);
+{REAL}	return parser::make_REAL(mlc::ls_real_index(), ctx->curline);
 			
-{DIGIT}+		return parser::make_UINT(mlc::ls_int_index(), ctx->curline);
+{INT}		return parser::make_UINT(mlc::ls_int_index(), ctx->curline);
 
-{LETTERS}({DIGIT}|{LETTERS})*	return parser::make_IDENTIFIER(mlc::ls_id_index(), ctx->curline);
+{IDENTIFIER}	{
+	char *input = _strdup(yytext);
+	char *tmp = input;
+	while(*tmp){
+		*tmp = toupper((unsigned char) *tmp);
+		tmp++;
+	}
+	auto idx = ctx->tab->ls_id().add(input);
+	return parser::make_IDENTIFIER(idx, ctx->curline);
+}
 
 {WHITESPACE}+		/* go out with whitespaces */
 
