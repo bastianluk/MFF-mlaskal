@@ -25,9 +25,9 @@ using namespace std;
 
 namespace mlc {
 
-	tuple<int, bool> parse_int(char* rawInput);
+	tuple<int, bool> parse_int(const string input);
 	
-	tuple<float, bool> parse_real(char* rawInput);
+	tuple<float, bool> parse_real(const string input);
 
 }
 

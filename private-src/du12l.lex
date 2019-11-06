@@ -47,7 +47,7 @@ IDENTIFIER({LETTERS}({DIGIT}|{LETTERS})*)
 
 \'			BEGIN(STRING);
 
-<STRING>[^\'\n]+	output.append(_strdup(yytext));
+<STRING>[^\'\n]+	output.append(yytext);
 
 <STRING>\'\' output.append("'");
 
@@ -246,12 +246,12 @@ IDENTIFIER({LETTERS}({DIGIT}|{LETTERS})*)
 
 
 {IDENTIFIER}	{
-	char *input = _strdup(yytext);
-	char *c = input;
-	while(*c){
-		*c = toupper((unsigned char) *c);
-		c++;
-	}
+	string input = string(yytext);
+
+	for_each(input.begin(), input.end(), [](char & c) {
+		c = toupper(c);
+	});
+
 	auto idx = ctx->tab->ls_id().add(input);
 	return parser::make_IDENTIFIER(idx, ctx->curline);
 }

@@ -18,44 +18,41 @@ using namespace std;
 
 namespace mlc {
 	
-	tuple<int, bool> parse_int(char* rawInput)
+	tuple<int, bool> parse_int(const string input)
 	{
-		long value = 0;
-		auto error = false;
+		int value = 0;
+		auto error = false;			
 		
-		string input = _strdup(rawInput);
-		auto lastDigitIndex = 0;
-
-		for (int i = 0; i < input.length(); i++)
+		for (unsigned int i = 0; i < input.length(); i++)
 		{
-			if (!isdigit(input[i]))
+			if (isdigit(input[i]))
+			{
+				auto newValue = value * 10 + (int)(input[i] - '0');
+
+				if (newValue <= value)
+				{
+					error = true;
+				}
+
+				value = newValue;
+			}
+			else
 			{
 				break;
 			}
-			lastDigitIndex = i;
 		}
 		
-		for (int i = max(0, lastDigitIndex - 7); i <= lastDigitIndex; i++)
-		{
-			value = value * 10 + (int)(input[i] - '0');
-		}
-
-		if (lastDigitIndex > 7)
-		{
-			error = true;
-		}
-		
-		return make_tuple((int)value, error);
+		return make_tuple(value, error);
 	}
 
 	
-	tuple<float, bool> parse_real(char* rawInput)
+	tuple<float, bool> parse_real(const string input)
 	{
 		float value = 0;
 		auto error = false;
 		try
 		{
-			value = stof(string(_strdup(rawInput)));
+			value = stof(input);
 		}
 		catch (const out_of_range& oor)
 		{
