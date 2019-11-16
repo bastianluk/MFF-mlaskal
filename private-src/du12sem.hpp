@@ -17,17 +17,9 @@
 #include "dutables.hpp"
 #include "abstract_instr.hpp"
 #include "gen_ainstr.hpp"
-#include<tuple>
-#include<cmath>
-#include<cstdlib>
-
-using namespace std;
 
 namespace mlc {
 
-	tuple<int, bool> parse_int(const string input);
-	
-	tuple<float, bool> parse_real(const string input);
 
 }
 
