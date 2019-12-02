@@ -29,6 +29,8 @@ namespace mlc {
 
 	tuple<float, bool> parse_real(const string input);
 
+	type_pointer get_type_pointer(symbol_tables* ctx, ls_id_index idx, int idx_line);
+
 }
 
 #endif

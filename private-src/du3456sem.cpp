@@ -60,6 +60,16 @@ namespace mlc {
 		return make_tuple(value, error);
 	}
 
+	/* From documentation */
+	type_pointer get_type_pointer(symbol_tables* ctx, ls_id_index idx, int idx_line) {
+		auto ts = ctx->find_symbol(idx)->access_type();
+		if (!ts)
+		{
+			message(DUERR_NOTTYPE, idx_line, *idx);
+		}
+		return ts->type();
+	}
+
 };
 
 /*****************************************/
